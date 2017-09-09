@@ -1,4 +1,5 @@
-require_relative "pushka/version.rb"
+require 'pushka/version'
+require 'pushka/application'
 
 module Pushka
 end

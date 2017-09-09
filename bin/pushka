@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'pushka'
+Pushka::Application.new.run
