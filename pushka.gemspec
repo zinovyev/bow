@@ -2,7 +2,7 @@ require_relative 'lib/pushka/version.rb'
 
 Gem::Specification.new do |s|
   s.name        = 'pushka'
-  s.version     = Pushka::VERSION 
+  s.version     = Pushka::VERSION
   s.date        = '2017-09-09'
   s.summary     = 'Rake task fast delivery tool'
   s.description = 'Rake task fast delivery tool'
