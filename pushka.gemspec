@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/zinovyev/pushka'
   s.license     = 'MIT'
   s.add_runtime_dependency 'rake'
-  s.add_development_dependency 'rspec', '~> 3.6'
-  s.add_development_dependency 'rubocop', '~> 0.49.1'
+  s.add_development_dependency 'pry'
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rubocop'
 end
