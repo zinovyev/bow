@@ -1,6 +1,5 @@
 require 'json'
 require 'set'
-require 'pry'
 
 module Bow
   Host = Struct.new(:host, :group, :conn)
@@ -31,6 +30,8 @@ module Bow
       @hosts[:all] = @hosts[:all].uniq
       @parsed = true
     end
+
+    private
 
     def parse_group(group, hosts)
       group = group.to_sym

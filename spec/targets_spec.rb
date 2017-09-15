@@ -19,7 +19,7 @@ RSpec.describe Bow::Targets do
 
   describe '#raw_targets' do
     it 'should read the same data as written' do
-      expect(targets.raw_data).to eq raw_targets
+      expect(targets.send :raw_data).to eq raw_targets
     end
   end
 
