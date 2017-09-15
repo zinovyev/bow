@@ -1,6 +1,6 @@
 require 'open3'
 
-module Pushka
+module Bow
   class SshHelper
     class << self
       def method_missing(m, *args, &block)

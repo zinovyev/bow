@@ -1,4 +1,4 @@
-module Pushka
+module Bow
   class DirChecker
     def initialize
       @pwd = Dir.pwd

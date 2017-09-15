@@ -1,6 +1,6 @@
 require 'json'
 
-module Pushka
+module Bow
   class HostParser
     attr_reader :file, :hosts, :groups
 

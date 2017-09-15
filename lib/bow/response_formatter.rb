@@ -1,4 +1,4 @@
-module Pushka
+module Bow
   class ResponseFormatter
     ERROR = "\033[31m%s\033[0m"
     INFO = "\033[33m%s\033[0m"

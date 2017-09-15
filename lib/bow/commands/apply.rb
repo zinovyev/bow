@@ -1,6 +1,10 @@
-module Pushka
+module Bow
   module Commands
     class Apply < Command
+      def description
+        'Apply provision on remote hosts.'
+      end
+
       def run
         hosts.in_threads(options[:group]) do |host|
           result = SshHelper.prepare_provision(host[:conn], PROVISION_PATH)

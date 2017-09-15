@@ -1,6 +1,10 @@
-module Pushka
+module Bow
   module Commands
-    class Preprovision < Command
+    class Prepare < Command
+      def description
+        'Install RVM, Ruby and Rake on provisioned hosts'
+      end
+
       def run
         hosts.in_threads(@options[:group]) do |host|
           result = SshHelper.prepare_provision( host[:conn], PROVISION_PATH)
