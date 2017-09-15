@@ -11,4 +11,14 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.around(:each) do |example|
+    @original_dir = Dir.pwd
+    @testdir = File.join(__dir__, 'testdir')
+    FileUtils.mkdir_p(@testdir)
+    Dir.chdir(@testdir)
+    example.run
+    Dir.chdir(@original_dir)
+    FileUtils.rm_rf(@testdir)
+  end
 end

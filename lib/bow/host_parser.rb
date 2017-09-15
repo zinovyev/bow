@@ -12,6 +12,7 @@ module Bow
     end
 
     def method_missing(m, *_args, &block)
+      super
       parse
       return hosts[m] unless block_given?
       hosts[m].each { |h| yield(h) }

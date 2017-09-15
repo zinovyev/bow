@@ -17,7 +17,13 @@ module Bow
       end
 
       def command_name
-        @command_name ||= name.to_s.split('::').last.downcase
+        @command_name ||= name.to_s
+                              .split('::')
+                              .last
+                              .split(/([A-Z]{1}[^A-Z]*)/)
+                              .select { |s| !s.empty? }
+                              .join('_')
+                              .downcase
       end
 
       def find(name)

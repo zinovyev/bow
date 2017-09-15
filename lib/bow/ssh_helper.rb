@@ -4,7 +4,12 @@ module Bow
   class SshHelper
     class << self
       def method_missing(m, *args, &block)
-        new(args.shift).send m, *args
+        super
+        new(args.shift).send m, *args, &block
+      end
+
+      def respond_to_missing?
+        super
       end
     end
 
