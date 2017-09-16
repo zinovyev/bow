@@ -6,4 +6,4 @@ task :test do
 end
 
 desc 'Run tests'
-task :default => :test
+task default: :test

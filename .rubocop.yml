@@ -2,3 +2,5 @@ Style/Documentation:
   Enabled: false
 Metrics/BlockLength:
   Enabled: false
+Style/DoubleNegation:
+  Enabled: false

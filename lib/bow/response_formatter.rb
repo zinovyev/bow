@@ -6,7 +6,7 @@ module Bow
 
     class << self
       def format(host, result)
-        host_format = '[%.5s] %13s' % [host[:group], host[:host]]
+        host_format = format('[%.5s] %13s', host[:group], host[:host])
         colorize(result).each { |msg| puts "#{host_format}: #{msg}" if msg }
       end
 

@@ -18,6 +18,7 @@ module Bow
       @argv = argv.dup
     end
 
+    # rubocop:disable Lint/ShadowingOuterLocalVariable
     def run
       opts = OptionParser.new do |opts|
         opts.banner = build_banner
@@ -27,6 +28,7 @@ module Bow
       command = parse_arguments(opts)
       command.run
     end
+    # rubocop:enable Lint/ShadowingOuterLocalVariable
 
     private
 

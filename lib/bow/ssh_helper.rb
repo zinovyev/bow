@@ -20,12 +20,12 @@ module Bow
     end
 
     def execute(cmd)
-      cmd = "ssh #{conn} #{cmd}" 
+      cmd = "ssh #{conn} #{cmd}"
       run(cmd)
     end
 
     def copy(source, target = '/tmp')
-      source = source =~ /^\// ? source : File.join(Dir.pwd, source)
+      source = source =~ %r{^\/} ? source : File.join(Dir.pwd, source)
       cmd = "scp -r #{source} #{conn}:#{target}"
       run(cmd)
     end

@@ -1,5 +1,8 @@
 require 'json'
 
+# The class is deprecated
+# rubocop:disable Style/MethodMissing
+# rubocop:disable Metrics/MethodLength
 module Bow
   class HostParser
     attr_reader :file, :hosts, :groups
@@ -18,14 +21,14 @@ module Bow
       hosts[m].each { |h| yield(h) }
     end
 
-    def in_threads(group, &block)
+    def in_threads(group)
       parse
       threads = []
       hosts[group.to_sym].each do |h|
-        threads << Thread.new { block.call(h) }
+        threads << Thread.new { yield(h) }
       end
 
-      threads.each { |thr| thr.join }
+      threads.each(&:join)
     end
 
     private
@@ -63,3 +66,5 @@ module Bow
     end
   end
 end
+# rubocop:enable Style/MethodMissing
+# rubocop:enable Metrics/MethodLength

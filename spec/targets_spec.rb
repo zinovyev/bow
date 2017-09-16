@@ -19,7 +19,7 @@ RSpec.describe Bow::Targets do
 
   describe '#raw_targets' do
     it 'should read the same data as written' do
-      expect(targets.send :raw_data).to eq raw_targets
+      expect(targets.send(:raw_data)).to eq raw_targets
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.describe Bow::Targets do
     end
 
     it 'should yield on every host in a group' do
-      targets.hosts(:api) { |h| expect(h.host).to match /([\d]{1,3}.?){4}/ }
+      targets.hosts(:api) { |h| expect(h.host).to match(/([\d]{1,3}.?){4}/) }
     end
   end
 end

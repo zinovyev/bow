@@ -21,7 +21,7 @@ module Bow
                               .split('::')
                               .last
                               .split(/([A-Z]{1}[^A-Z]*)/)
-                              .select { |s| !s.empty? }
+                              .reject(&:empty?)
                               .join('_')
                               .downcase
       end

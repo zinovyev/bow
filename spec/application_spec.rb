@@ -13,7 +13,7 @@ RSpec.describe Bow::Application do
     it 'should build a vaalid banner' do
       banner = application.send :build_banner
       expect(banner).to match(/Usage:.*COMMANDS.*OPTIONS/m)
-      EXISTING_COMMANDS.each { |c| expect(banner).to match /#{c}/m }
+      EXISTING_COMMANDS.each { |c| expect(banner).to match(/#{c}/m) }
     end
   end
 

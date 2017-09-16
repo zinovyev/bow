@@ -7,7 +7,7 @@ module Bow
 
       def run
         hosts.in_threads(@options[:group]) do |host|
-          result = SshHelper.prepare_provision( host[:conn], PROVISION_PATH)
+          result = SshHelper.prepare_provision(host[:conn], PROVISION_PATH)
           ResponseFormatter.format(host, result)
 
           provision_cmd = "bash #{PROVISION_PATH}/preprovision.sh"

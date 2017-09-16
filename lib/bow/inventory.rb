@@ -39,8 +39,10 @@ module Bow
 
     def ensure!
       parse
-      [['Rakefile', @rakefile, @rakefiles],
-       ['Target file', @targetfile, @targetfiles]].each do |name, file, variants|
+      [
+        ['Rakefile', @rakefile, @rakefiles],
+        ['Target file', @targetfile, @targetfiles]
+      ].each do |name, file, variants|
         unless file
           raise "No #{name} found (looking for: #{variants.join(', ')})"
         end
@@ -75,7 +77,7 @@ module Bow
     end
 
     def detect_files(variants)
-      variants.detect { |fn| File.exists?(fn) }
+      variants.detect { |fn| File.exist?(fn) }
     end
   end
 end
