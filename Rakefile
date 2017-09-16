@@ -2,8 +2,7 @@ require 'rspec'
 require 'rake/testtask'
 
 task :test do
-  system('bundle exec rspec')
-  system('bundle exec rubocop')
+  exec('bundle exec rspec && bundle exec rubocop')
 end
 
 desc 'Run tests'
