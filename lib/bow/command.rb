@@ -4,7 +4,7 @@ module Bow
   class Command
     PROVISION_PATH = '/tmp/rake_provision'.freeze
 
-    attr_reader :options, :hosts
+    attr_reader :options
 
     class << self
       attr_reader :all, :names
