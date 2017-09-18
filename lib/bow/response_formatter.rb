@@ -1,3 +1,4 @@
+require 'pry'
 module Bow
   class ResponseFormatter
     ERROR = "\033[31m%s\033[0m".freeze
@@ -6,7 +7,7 @@ module Bow
 
     class << self
       def format(host, result)
-        host_format = format('[%.5s] %13s', host[:group], host[:host])
+        host_format = sprintf('[%.20s] %15s', host.group, host.host)
         colorize(result).each { |msg| puts "#{host_format}: #{msg}" if msg }
       end
 

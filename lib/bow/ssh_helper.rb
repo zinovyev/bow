@@ -4,12 +4,7 @@ module Bow
   class SshHelper
     class << self
       def method_missing(m, *args, &block)
-        super
         new(args.shift).send m, *args, &block
-      end
-
-      def respond_to_missing?
-        super
       end
     end
 
@@ -19,8 +14,8 @@ module Bow
       @conn = conn
     end
 
-    def execute(cmd)
-      cmd = "ssh #{conn} #{cmd}"
+    def execute(cmd, timeout = 10)
+      cmd = "ssh -o ConnectTimeout=#{timeout} #{conn} #{cmd}"
       run(cmd)
     end
 

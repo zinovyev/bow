@@ -1,3 +1,5 @@
+require 'pry'
+
 module Bow
   module Commands
     class Exec < Command
@@ -10,10 +12,12 @@ module Bow
       end
 
       def run
-        raise ArgumentError, 'Command required!' unless (cmd = ARGV.pop)
-        hosts.in_threads(options[:group]) do |host|
-          result = SshHelper.execute(host[:conn], cmd)
-          ResponseFormatter.format(host, result)
+        raise ArgumentError, 'Command required!' unless (cmd = @argv.pop)
+        ThreadPool.new do |t|
+          t.from_enumerable targets do |host|
+            result = SshHelper.execute(host.conn, cmd)
+            ResponseFormatter.format(host, result)
+          end
         end
       end
     end

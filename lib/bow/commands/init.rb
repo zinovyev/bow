@@ -6,7 +6,7 @@ module Bow
       end
 
       def run
-        DirChecker.new.prepare_dir!
+        InventoryExample.new.init
       end
     end
   end

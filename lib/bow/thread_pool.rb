@@ -1,43 +1,65 @@
 module Bow
   class ThreadPool
-    attr_accessor :handler, :collection
+    attr_accessor :max_threads, :queue
 
-    def initialize(thread_count = 4, &block)
-      @thread_count = thread_count
+    def initialize(max_threads = 4, &block)
       @queue = []
       @threads = []
-      @handler = proc {}
-      yield(self) if block_given?
+      @history = []
+      @max_threads = max_threads
+      return unless block_given?
+      yield(self)
+      run
     end
 
-    def join
-      i = 0
-      collection.each do |*args|
-        thr = Thread.new { handler.call(*args) }
-        @threads << thr
-      end
-      @threads.each { |thr| thr.join }
-      # @threads = []
-    end
-
-    def add(&block)
-      @queue << block
+    def add(&task)
+      add_task(task)
     end
 
     def run
-      while !@queue.empty?
-        run_sequence
+      @queue.each do |task|
+        wait
+        run_task(task)
+      end
+      wait_for_all
+    end
+
+    def from_enumerable(enumerable, &block)
+      enumerable.each do |params|
+        task = build_task(block, params)
+        add_task(task)
       end
     end
 
-    def run_sequence
-      p 'seq'
-      while (@threads.size <= @thread_count - 1) && !@queue.empty?
-        block = @queue.shift
-        @threads << Thread.new(&block)
+    private
+
+    def run_task(task)
+      thr = Thread.new(&task)
+      @threads << thr
+    end
+
+    def build_task(handler, params)
+      -> { handler.call(params) }
+    end
+
+    def add_task(task)
+      @queue << task
+    end
+
+    def wait
+      return if @threads.count < @max_threads
+      until @threads.count < @max_threads
+        active_threads = @threads.select(&:alive?)
+        @history += (@threads - active_threads)
+        @threads = active_threads
+        sleep 0.001
       end
+    end
+
+    def wait_for_all
+      return if @threads.empty?
+      # @threads.map!(&:run)
       @threads.each(&:join)
-      @threads = []
     end
   end
 end

@@ -6,8 +6,8 @@ module Bow
       end
 
       def run
-        ARGV << 'echo pong'
-        Exec.new(@options).run
+        @argv << 'echo pong'
+        Exec.new(@argv, @options).run
       end
     end
   end

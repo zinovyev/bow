@@ -31,10 +31,11 @@ module Bow
         @all[index] if index
       end
 
-      %w[usage description].each { |m| define_method(m) { new({}).send m } }
+      %w[usage description].each { |m| define_method(m) { new().send m } }
     end
 
-    def initialize(options)
+    def initialize(argv = [], options = {})
+      @argv = argv
       @options = options
     end
 
@@ -52,6 +53,23 @@ module Bow
 
     def hosts
       @hosts = HostParser.new(options[:inventory])
+    end
+
+    def targets
+      load_inventory!
+      user = @options[:user]
+      group = @options[:group]
+      targets = Targets.new(@targetfile, user)
+      targets.hosts(group)
+    end
+
+    def load_inventory!
+      return if @inventory_loaded
+      inventory = Inventory.new
+      inventory.ensure!
+      @rakefile = inventory.rakefile
+      @targetfile = inventory.targetfile
+      @inventory_loaded = true
     end
   end
 end

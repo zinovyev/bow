@@ -1,13 +1,12 @@
 require 'rake/file_list'
-require 'pry'
 
 module Bow
   class Inventory
     DEFAULT_RAKEFILES = [
-      'rakefile',
       'Rakefile',
-      'rakefile.rb',
-      'Rakefile.rb'
+      'rakefile',
+      'Rakefile.rb',
+      'rakefile.rb'
     ].freeze
 
     DEFAULT_TARGETFILES = [

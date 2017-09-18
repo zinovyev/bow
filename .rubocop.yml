@@ -1,6 +1,10 @@
+AllCops:
+  TargetRubyVersion: 2.4
 Style/Documentation:
   Enabled: false
 Metrics/BlockLength:
   Enabled: false
 Style/DoubleNegation:
+  Enabled: false
+Style/MethodMissing:
   Enabled: false
