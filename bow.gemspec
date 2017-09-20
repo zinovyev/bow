@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'lib/bow/version.rb'
 
 Gem::Specification.new do |s|

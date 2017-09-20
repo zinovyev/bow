@@ -1,26 +1,29 @@
+# frozen_string_literal: true
+
 module Bow
   module Memorable
-    def initialize(task, _inventory = nil)
-      @task = task
-      @task_history = TaskHistory.load
+    attr_reader :task_history
+
+    def task_history
+      @task_history ||= History.load
     end
 
-    def load_history
-
+    def update_history(step = {})
+      task_history.add(name, step) unless step.empty?
     end
 
-    def update_history
-
+    def flush_history
+      task_history.flush
     end
 
-    def parse_hist; end
-
-    def active?
-      true
+    def apply!
+      update_history(applied: Time.now.to_i)
     end
 
     def applied?
-      false
+      task_hist = task_history.get(name)
+      return false if !task_hist || task_hist.empty?
+      !!task_hist.last['applied']
     end
   end
 end

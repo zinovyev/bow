@@ -1,0 +1,162 @@
+<h1>bow</h1>
+
+<p>Automate your infrastructure provisioning and configuration with Rake.</p>
+
+<p><a href="https://travis-ci.org/zinovyev/bow"><img src="https://travis-ci.org/zinovyev/bow.svg?branch=master" alt="Build Status"></a></p>
+
+<h2>About</h2>
+
+<p>Bow is a system that allows you to write simple Rake tasks and execute them
+remotely to provision and configure you servers.</p>
+
+<h2>Why?</h2>
+
+<p>Well...</p>
+
+<p>I do know about dozens of <a href="https://en.wikipedia.org/wiki/%20Comparison_of_open-source_configuration_management_software">configuration management</a> software. And I&#39;ve also used to use some of them.
+And I really like a couple of them too.</p>
+
+<p>But when the goal is so simple as a configuration of 2 or 3 VPS nodes I don&#39;t
+really want to create a complex infrastructure for it and I like to do it in
+Ruby (well, maybe in Bash and Ruby). And I like Rake as you do it too =))</p>
+
+<p>Bow is simple, agentless and it doesn&#39;t bring it&#39;s own DSL to life, cause it
+uses Rake instead.</p>
+
+<h2>Usage</h2>
+
+<ol>
+<li><p>If you&#39;re not familiar with Rake <a href="https://ruby.github.io/rake/">Rake docs</a> and <a href="https://github.com/ruby/rake">Rake home</a> will be a good place to start from;</p></li>
+<li><p>Install the <code>bow</code> gem with:</p></li>
+</ol>
+
+<p>```bash</p>
+
+<p>gem install bow</p>
+
+<p>``` </p>
+
+<ol>
+<li>Create an empty folder and init a basic structure there:</li>
+</ol>
+
+<p>```bash</p>
+
+<p>mkdir ~/bow-test</p>
+
+<p>cd ~/bow-test</p>
+
+<p>bow init</p>
+
+<p>```</p>
+
+<ol>
+<li>The command <code>bow init</code> created a bare structure wich consits of a
+<code>Rakefile</code> and a list of targets (managed servers) <code>targets.json</code>.</li>
+</ol>
+
+<p>The targets file contains 4 IPs combined in two managed groups:</p>
+
+<p>```json</p>
+
+<p>{
+  &quot;example<em>group1&quot;: [
+    &quot;192.168.50.27&quot;,
+    &quot;192.168.50.37&quot;
+  ],
+  &quot;example</em>group2&quot;: [
+    &quot;192.168.50.47&quot;,
+    &quot;192.168.50.57&quot;
+  ]
+}</p>
+
+<p>```</p>
+
+<p>A <code>Rakefile</code> contains two tasks for provisioning packed in namespaces wich are
+called by the name of the server groups from the <code>targets.json</code> file. The main
+task of the group MUST always be called <strong>provision</strong> and can be bound to any
+number of additional tasks (sometimes (always) it is convinient to put them to
+separate files into the <a href="https://ruby.github.io/rake/doc/rakefile_rdoc.html#label-Multiple+Rake+Files">rakelib</a>
+folder.</p>
+
+<p>```ruby</p>
+
+<p>require &#39;bow/rake&#39;</p>
+
+<p>Rake.application.options.trace_rules = true</p>
+
+<p>PROVISION<em>DIR = &#39;/tmp/rake</em>provision&#39;.freeze</p>
+
+<p>flow run: :once, enabled: true, revert: :good<em>night</em>world
+task :hello_world do
+  p &#39;Hello world!&#39;
+end</p>
+
+<p>task :good<em>night</em>world do
+  p &#39;Good night world!&#39;
+end</p>
+
+<p>namespace :example<em>group1 do
+  task provision: [:print</em>hello] do
+    sh &#39;echo &quot;Hello from example group #1 server!&quot;&#39;
+  end
+end</p>
+
+<p>namespace :example_group2 do
+  task :provision do
+    sh &#39;echo &quot;Hello from example group #2 server!&quot;&#39;
+  end
+end</p>
+
+<p>task :print_hello do
+  sh &#39;echo &quot;Hello World&quot;&#39;
+end</p>
+
+<p>task :print_date do
+  puts <code>date</code>
+end</p>
+
+<p>```</p>
+
+<ol>
+<li><p>And that&#39;s it! Now you can run <code>bow apply</code> and your provisioning tasks will
+be executed on servers;</p></li>
+<li><p>To find more commands (like <code>ping</code> and <code>exec</code>) type <code>bow -h</code>;</p></li>
+</ol>
+
+<h2>Task flow</h2>
+
+<p>While that is not necessary, it can be conviniet to install a <code>bow</code> gem on the
+client server too. Than you will be able to use a little Rake DSL enhancement
+wich will make it possible for you to have a more easy controll of the flow of
+your tasks.</p>
+
+<p>The only thing you will be needed to do afterwards to enable the feature is to
+require it by putting <code>require bow/rake</code> to the top of your <code>Rakefile</code>.</p>
+
+<p>Now you&#39;ll be able to put this line before the task definition:</p>
+
+<p>```ruby</p>
+
+<p>flow run: :once, enabled: :true, revert: :revert<em>simple</em>task
+task :simple_task do
+  # some code here ...
+end</p>
+
+<p>task :revert<em>simple</em>task do
+  # remove evertything that simple task have done &gt;/ 
+end</p>
+
+<p>```</p>
+
+<p>The 3 options are:</p>
+
+<ul>
+<li><p><code>run</code> wich can be either <code>:once</code> or <code>:always</code>. If set to <code>once</code> the task will
+be run only once on remote server;</p></li>
+<li><p><code>enabled</code> wich takes a boolean value. If set to false, the task will be
+disabled and won&#39;t run at all;</p></li>
+<li><p><code>revert</code> wich defines a task that can revert changes done by the original
+task when the original task is disabled (by <code>enabled: false</code> option). Actually
+it&#39;s something similar to the down migration when dealing with databases;</p></li>
+</ul>

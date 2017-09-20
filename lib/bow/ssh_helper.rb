@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open3'
 
 module Bow
@@ -20,7 +22,7 @@ module Bow
     end
 
     def copy(source, target = '/tmp')
-      source = source =~ %r{^\/} ? source : File.join(Dir.pwd, source)
+      source = source.match?(%r{^\/}) ? source : File.join(Dir.pwd, source)
       cmd = "scp -r #{source} #{conn}:#{target}"
       run(cmd)
     end

@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'bow/config'
 require 'bow/memorable'
 require 'bow/rake'
 require 'bow/version'
@@ -7,7 +10,7 @@ require 'bow/ssh_helper'
 require 'bow/host_parser'
 require 'bow/application'
 require 'bow/thread_pool'
-require 'bow/task_history'
+require 'bow/history'
 require 'bow/inventory'
 require 'bow/inventory_example'
 require 'bow/response_formatter'

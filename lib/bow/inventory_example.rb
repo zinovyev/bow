@@ -1,6 +1,6 @@
-require 'fileutils'
+# frozen_string_literal: true
 
-# rubocop:disable Layout/IndentHeredoc
+require 'fileutils'
 module Bow
   class InventoryExample
     TARGETING_EXAMPLE = {

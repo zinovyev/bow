@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Bow
   class ThreadPool
     attr_accessor :max_threads, :queue
 
-    def initialize(max_threads = 4, &block)
+    def initialize(max_threads = 4)
       @queue = []
       @threads = []
       @history = []

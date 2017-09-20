@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'fileutils'
 
@@ -31,8 +33,8 @@ RSpec.describe Bow::Inventory do
 
   describe '#ensure!' do
     it 'should raise' do
-      msg = ['No Rakefile found (looking for: rakefile, ',
-             'Rakefile, rakefile.rb, Rakefile.rb)'].join
+      msg = ['No Rakefile found (looking for: Rakefile, ',
+             'rakefile, Rakefile.rb, rakefile.rb)'].join
       expect { inventory.ensure! }.to raise_error msg
     end
 

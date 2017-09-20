@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 require 'pry'
 module Bow
   class ResponseFormatter
-    ERROR = "\033[31m%s\033[0m".freeze
-    INFO = "\033[33m%s\033[0m".freeze
-    SUCCESS = "\033[32m%s\033[0m".freeze
+    ERROR = "\033[31m%s\033[0m"
+    INFO = "\033[33m%s\033[0m"
+    SUCCESS = "\033[32m%s\033[0m"
 
     class << self
       def format(host, result)
-        host_format = sprintf('[%.20s] %15s', host.group, host.host)
+        host_format = format('[%.20s] %15s', host.group, host.host)
         colorize(result).each { |msg| puts "#{host_format}: #{msg}" if msg }
       end
 

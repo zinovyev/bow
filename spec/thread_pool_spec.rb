@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Bow::ThreadPool do
   describe '#new' do
     let(:tp) { described_class.new }
-    let(:procs) { [-> { 'foo0' }, -> { 'foo1' }, -> { 'foo2' }]  }
+    let(:procs) { [-> { 'foo0' }, -> { 'foo1' }, -> { 'foo2' }] }
     before { procs.each { |p| tp.add(&p) } }
 
     it 'is expected to add all procs to the queue' do
@@ -36,4 +38,3 @@ RSpec.describe Bow::ThreadPool do
     end
   end
 end
-

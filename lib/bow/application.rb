@@ -1,5 +1,4 @@
 require 'optparse'
-require 'pry'
 
 module Bow
   class Application
@@ -50,7 +49,7 @@ module Bow
       build_command(argv.shift, argv, @options)
     end
 
-    def build_command(name, argv, options = {})
+    def build_command(name, argv = {}, options = {})
       raise "Unknown command #{name}!" unless command_exists? name
       Command.find(name).new(argv, options)
     end

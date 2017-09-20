@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'pry'
 
 module Bow
   class Command
-    PROVISION_PATH = '/tmp/rake_provision'.freeze
+    PROVISION_PATH = '/tmp/rake_provision'
 
     attr_reader :options
 
@@ -31,7 +33,7 @@ module Bow
         @all[index] if index
       end
 
-      %w[usage description].each { |m| define_method(m) { new().send m } }
+      %w[usage description].each { |m| define_method(m) { new.send m } }
     end
 
     def initialize(argv = [], options = {})

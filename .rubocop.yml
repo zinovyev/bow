@@ -8,3 +8,5 @@ Style/DoubleNegation:
   Enabled: false
 Style/MethodMissing:
   Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false

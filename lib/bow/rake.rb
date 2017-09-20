@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 require 'rake'
 require 'bow'
-require 'pry'
 
 module Bow
   class Rake; end
@@ -8,11 +9,10 @@ end
 
 module Rake
   module DSL
-
-    # Extend next rake task.
+    # Describe the flow of the next rake task.
     #
     # Example:
-    #   set run: :once, enabled: true, revert: :world_down
+    #   flow run: :once, enabled: true, revert: :world_down
     #   task world: [:build] do
     #     # ... build world
     #   end
@@ -20,110 +20,100 @@ module Rake
     #   task :world_down do
     #     # ... destroy world
     #   end
-    def ext(*extensions) # :doc:
-      Rake.application.last_extensions = extensions
+    def flow(*flow) # :doc:
+      Rake.application.last_flow = flow
     end
   end
 
   module TaskManager
-    attr_accessor :last_extensions
+    attr_accessor :last_flow
 
     # Lookup a task.  Return an existing task if found, otherwise
     # create a task of the current type.
     def intern(task_class, task_name)
       @tasks[task_name.to_s] ||= task_class.new(task_name, self)
       task = @tasks[task_name.to_s]
-      task.unpack_extensions(get_extensions(task))
+      task.unpack_flow(get_flow(task))
       task
     end
 
-    # Return current extensions, clearing it in the process.
-    def get_extensions(_task)
-      @last_extensions ||= nil
-      ext = @last_extensions&.first
-      @last_extensions = nil
-      ext
+    # Return current flow, clearing it in the process.
+    def get_flow(_task)
+      @last_flow ||= nil
+      flow = @last_flow&.first
+      @last_flow = nil
+      flow
     end
   end
 
   class Task
     include ::Bow::Memorable
-    ALLOWED_EXTENSIONS = %i[run enabled revert].freeze
+
+    ALLOWED_FLOW_RULES = %i[run enabled revert].freeze
 
     alias orig__clear clear
     alias orig__invoke_with_call_chain invoke_with_call_chain
 
-    # rubocop:disable Lint/RescueException
-    # rubocop:disable Metrics/PerceivedComplexity
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
     def invoke_with_call_chain(task_args, invocation_chain) # :nodoc:
-      load_history
-      if disabled?
-        return unless active?
-        if revert_task = find_revert_task
-          result = revert_task.execute unless revert_task.applied?
-        end
-        active = false
-        update_history
-        return result
-      end
+      return apply_revert_task if disabled?
       return if run_once? && applied?
       result = orig__invoke_with_call_chain(task_args, invocation_chain)
-      active = false if run_once?
-      update_history
+      apply! if run_once?
+      flush_history
       result
-    # rescue Exception => ex
-      # add_chain_to(ex, new_chain)
-      # raise ex
     end
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/PerceivedComplexity
-    # rubocop:enable Lint/RescueException
+
+    def apply_revert_task
+      revert_task = find_revert_task
+      return if !revert_task || revert_task.applied?
+      result = revert_task.execute
+      revert_task.apply!
+      flush_history
+      result
+    end
 
     def clear
-      clear_extensions
+      clear_flow
       orig__clear
     end
 
-    def clear_extensions
-      @extensions = {}
+    def clear_flow
+      @flow = {}
       self
-    end
-
-    def run_once?
-      @extensions ||= {}
-      @extensions[:run] == :once
     end
 
     def disabled?
       !enabled?
     end
 
+    def run_once?
+      flow[:run] == :once
+    end
+
     def enabled?
-      @extensions ||= {}
-      !!@extensions[:enabled]
+      !!flow[:enabled]
+    end
+
+    def flow
+      @flow ||= {}
+      @flow
     end
 
     def find_revert_task
-      task_name = @extensions[:revert] if @extensions[:revert]
+      task_name = @flow[:revert] if @flow[:revert]
       application.lookup(task_name)
     end
 
-    def add_extension(ext, val)
-      return unless ALLOWED_EXTENSIONS.include? ext
-      @extensions ||= {}
-      @extensions[ext.to_sym] = val
+    # Add flow to the task.
+    def unpack_flow(flow)
+      return unless flow
+      flow.each { |rule, val| add_flow_rule(rule, val) }
     end
 
-    # Add extensions set to the task.
-    def unpack_extensions(extensions)
-      # binding.pry
-      return unless extensions
-      extensions.each { |ext, val| add_extension(ext, val) }
+    def add_flow_rule(rule, val)
+      return unless ALLOWED_FLOW_RULES.include? rule
+      @flow ||= {}
+      @flow[rule.to_sym] = val
     end
   end
 end

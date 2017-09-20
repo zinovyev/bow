@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Bow
   module Commands
     class Init < Command

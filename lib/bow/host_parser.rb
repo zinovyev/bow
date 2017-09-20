@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'json'
 
 # The class is deprecated
-# rubocop:disable Style/MethodMissing
 # rubocop:disable Metrics/MethodLength
 module Bow
   class HostParser
