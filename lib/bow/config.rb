@@ -4,38 +4,50 @@ module Bow
   class Config
     class << self
       def host
-        @host ||= Config.new(:host)
+        @host ||= Config.new(:host, HOST_BASE_DIR)
       end
 
       def guest
-        @guest ||= Config.new(:guest)
+        @guest ||= Config.new(:guest, GUEST_BASE_DIR)
+      end
+
+      def guest_from_host
+        @guest_from_host ||= Config.new(:guest, '~')
       end
     end
 
+    HOST_BASE_DIR = File.dirname(File.dirname(File.dirname(__FILE__)))
+
     GUEST_BASE_DIR = "#{Dir.home}/.bow"
 
-    HOST_BASE_DIR = File.dirname(File.dirname(File.dirname(__FILE__))).freeze
+    GUEST_FROM_HOST_BASE_DIR = '~/.bow'
 
     PATHS = {
       guest: {
-        base_dir: GUEST_BASE_DIR,
-        rake_dir: "#{GUEST_BASE_DIR}/rake",
-        history: "#{GUEST_BASE_DIR}/history.json",
-        pre_script: "#{GUEST_BASE_DIR}/provision.sh"
+        base_dir: '%s',
+        rake_dir: '%s/rake',
+        history: '%s/history.json',
+        pre_script: '%s/provision.sh'
       },
       host: {
-        base_dir: HOST_BASE_DIR,
-        pre_script: "#{HOST_BASE_DIR}/src/provision.sh"
+        base_dir: '%s',
+        pre_script: '%s/src/provision.sh'
       }
     }.freeze
 
-    def initialize(type)
+    def initialize(type, base_dir)
       @type = type
+      @base_dir = base_dir
     end
 
     def get(name)
       name.to_sym
-      PATHS[@type][name]
+      value = PATHS[@type][name]
+      substitude_dir(value)
+    end
+
+    def substitude_dir(orig)
+      format(orig, @base_dir) if orig
     end
 
     def [](name)

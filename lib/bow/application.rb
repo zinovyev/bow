@@ -6,7 +6,7 @@ module Bow
     COLUMN_WIDTH = 32
     EMPTY_COLUMN = (' ' * COLUMN_WIDTH).freeze
 
-    attr_accessor :argv
+    attr_accessor :argv, :options
 
     def initialize(argv)
       @options = {
@@ -15,6 +15,7 @@ module Bow
         inventory: 'hosts.json'
       }
       @argv = argv.dup
+      @ssh_helpers = {}
     end
 
     # rubocop:disable Lint/ShadowingOuterLocalVariable
@@ -28,6 +29,25 @@ module Bow
       command.run
     end
     # rubocop:enable Lint/ShadowingOuterLocalVariable
+
+    def inventory
+      return @inventory if @inventory
+      @inventory ||= Inventory.new
+      @inventory.ensure!
+    end
+
+    def config
+      Config
+    end
+
+    def ssh_helper(host)
+      conn = host.conn
+      @ssh_helpers[conn] ||= SshHelper.new(conn, config, inventory)
+    end
+
+    def targets(user)
+      @targets ||= Targets.new(inventory.targetfile, user)
+    end
 
     private
 
@@ -46,12 +66,12 @@ module Bow
         argv << '-h'
         opts.parse!(argv)
       end
-      build_command(argv.shift, argv, @options)
+      build_command(argv.shift, argv)
     end
 
-    def build_command(name, argv = {}, options = {})
+    def build_command(name, argv = {})
       raise "Unknown command #{name}!" unless command_exists? name
-      Command.find(name).new(argv, options)
+      Command.find(name).new(argv, self)
     end
 
     def command_exists?(name)

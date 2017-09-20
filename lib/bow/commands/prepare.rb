@@ -10,11 +10,11 @@ module Bow
       def run
         ThreadPool.new do |t|
           t.from_enumerable targets do |host|
-            result = SshHelper.prepare_provision(host.conn, PROVISION_PATH)
+            result = ssh_helper(host).prepare_provision(PROVISION_PATH)
             ResponseFormatter.format(host, result)
 
             provision_cmd = "bash #{PROVISION_PATH}/preprovision.sh"
-            result = SshHelper.execute(host.conn, provision_cmd)
+            result = ssh_helper(host).execute(provision_cmd)
             ResponseFormatter.format(host, result)
           end
         end

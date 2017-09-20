@@ -17,7 +17,7 @@ module Bow
         raise ArgumentError, 'Command required!' unless (cmd = @argv.pop)
         ThreadPool.new do |t|
           t.from_enumerable targets do |host|
-            result = SshHelper.execute(host.conn, cmd)
+            result = ssh_helper(host).execute(cmd)
             ResponseFormatter.format(host, result)
           end
         end

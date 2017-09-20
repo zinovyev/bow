@@ -48,7 +48,7 @@ module Bow
           raise "No #{name} found (looking for: #{variants.join(', ')})"
         end
       end
-      true
+      self
     end
 
     private
