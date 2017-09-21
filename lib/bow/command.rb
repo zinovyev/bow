@@ -32,12 +32,11 @@ module Bow
       %w[usage description].each { |m| define_method(m) { new.send m } }
     end
 
-    attr_reader :options, :app
+    attr_reader :app
 
-    def initialize(app, argv = [])
+    def initialize(app = nil, argv = [])
       @app = app
       @argv = argv
-      @options = app.options
     end
 
     def description
@@ -53,9 +52,9 @@ module Bow
     end
 
     def targets
-      user = @options[:user]
-      group = @options[:group]
-      targets(user).hosts(group)
+      user = app.options[:user]
+      group = app.options[:group]
+      app.targets(user).hosts(group)
     end
   end
 end

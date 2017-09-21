@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'pry'
+require 'pp'
 
 module Bow
   module Commands
@@ -14,11 +15,12 @@ module Bow
       end
 
       def run
-        raise ArgumentError, 'Command required!' unless (cmd = @argv.pop)
+        raise ArgumentError, 'Command required!' unless @argv && !@argv.empty?
+        cmd = @argv.shift
         ThreadPool.new do |t|
           t.from_enumerable targets do |host|
-            result = ssh_helper(host).execute(cmd)
-            ResponseFormatter.format(host, result)
+            result = app.ssh_helper(host).execute(cmd)
+            ResponseFormatter.pretty_print(host, result)
           end
         end
       end

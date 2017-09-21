@@ -1,5 +1,3 @@
-AllCops:
-  TargetRubyVersion: 2.4
 Style/Documentation:
   Enabled: false
 Metrics/BlockLength:
@@ -10,3 +8,7 @@ Style/MethodMissing:
   Enabled: false
 Style/FrozenStringLiteralComment:
   Enabled: false
+AllCops:
+  Exclude:
+    - tests
+  TargetRubyVersion: '2.4'

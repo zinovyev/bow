@@ -71,7 +71,7 @@ module Bow
 
     def build_command(name, argv = {})
       raise "Unknown command #{name}!" unless command_exists? name
-      Command.find(name).new(argv, self)
+      Command.find(name).new(self, argv)
     end
 
     def command_exists?(name)

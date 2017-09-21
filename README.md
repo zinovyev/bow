@@ -13,16 +13,18 @@ to provision and configure you servers.
 
 Well...
 
-I do know about dozens of [configuration management](https://en.wikipedia.org/wiki/ Comparison_of_open-source_configuration_management_software) software. And I've also used to use some of them.
-And I really like a couple of them too.
+I do know about dozens of [configuration management](https://en.wikipedia.org/wiki/Comparison_of_open-source_configuration_management_software) software. And I've also used to use some of them.
+And I actually like a couple of them too.
 
 But when it comes to a simple goal like configuring 2 or 3 VPS nodes I don't
-really want to create a complex infrastructure (any infrastructure to be honest)
-for it and I like to do it in Ruby (well, maybe in Bash and Ruby).
+really want to create a complex infrastructure (I don't want to create any
+infrastructure to be honest) for it and I like to do it in Ruby (well, maybe
+in Bash and Ruby).
 
-And I like a great tool called Rake as you do it too =))
+And there's already exists a great tool that can execute tasks and is written
+in Ruby. And it's called Rake.
 
-Bow is simple, agentless and it doesn't bring it's own DSL to life, cause it
+So. Bow is simple, agentless and it doesn't bring it's own DSL to life, cause it
 uses Rake instead.
 
 ## Usage
@@ -84,40 +86,36 @@ Rake.application.options.trace_rules = true
 
 PROVISION_DIR = '/tmp/rake_provision'.freeze
 
-flow run: :once, enabled: true, revert: :good_night_world
-task :hello_world do
-  p 'Hello world!'
-end
+namespace :web do
+  task provision: :print_hello do
+  end
 
-task :good_night_world do
-  p 'Good night world!'
-end
-
-namespace :example_group1 do
-  task provision: [:print_hello] do
+  flow run: :once
+  task :print_hello do
     sh 'echo "Hello from example group #1 server!"'
   end
 end
 
 namespace :example_group2 do
-  task :provision do
+  task provision: :print_hello do
+  end
+
+  flow enabled: false, revert_task: :print_goodbye
+  task :print_hello do
     sh 'echo "Hello from example group #2 server!"'
   end
-end
 
-task :print_hello do
-  sh 'echo "Hello World"'
-end
-
-task :print_date do
-  puts `date`
+  task :print_goodbye do
+    sh 'echo "Goodbye! The task at example group #2 is disabled!"'
+  end
 end
 
 ```
 
-5. Now run `bow apply` and your provisioning tasks will be executed on servers;
+5. Now run `bow apply` and your provisioning tasks will be executed on servers
+listed in `targets.json` file;
 
-6. To find more commands (`ping`, `exec` etc.) type `bow -h`;
+6. To find more about available commands (`ping`, `exec` etc.) type `bow -h`;
 
 ## Task flow
 
