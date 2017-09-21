@@ -24,8 +24,6 @@ module Bow
 
     include ObjectSpace
 
-    attr_reader :full_history
-
     def initialize(skip_finalizer = false)
       @history_path = self.class.hist_file_path || Config.guest[:history]
       @modified = false

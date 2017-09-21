@@ -2,8 +2,6 @@
 
 module Bow
   module Memorable
-    attr_reader :task_history
-
     def task_history
       @task_history ||= History.load
     end

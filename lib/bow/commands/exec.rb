@@ -15,7 +15,7 @@ module Bow
       end
 
       def run
-        raise ArgumentError, 'Command required!' unless @argv && !@argv.empty?
+        raise ArgumentError, 'Command required!' unless !@argv&.empty?
         cmd = @argv.shift
         ThreadPool.new do |t|
           t.from_enumerable targets do |host|
