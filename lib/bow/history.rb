@@ -19,9 +19,6 @@ module Bow
       end
     end
 
-    VERSION_KEY = '__version'
-    BLACKLIST = [VERSION_KEY].freeze
-
     include ObjectSpace
 
     def initialize(skip_finalizer = false)

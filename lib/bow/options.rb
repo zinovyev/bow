@@ -22,6 +22,12 @@ module Bow
         :option_inventory
       ],
       [
+        '-c',
+        '--copy-tool',
+        'Utilit used for files transfer (scp or rsync)',
+        :option_copy_tool
+      ],
+      [
         '-v',
         '--version',
         'Print version and exit',
@@ -54,6 +60,10 @@ module Bow
 
     def option_inventory(inventory)
       @options[:inventory] = inventory
+    end
+
+    def option_copy_tool(copy_tool)
+      @options[:copy_tool] = copy_tool
     end
 
     def option_version(_v)

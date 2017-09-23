@@ -6,7 +6,7 @@ module Bow
     COLUMN_WIDTH = 32
     EMPTY_COLUMN = (' ' * COLUMN_WIDTH).freeze
 
-    attr_accessor :argv, :options
+    attr_accessor :argv, :options, :debug
 
     def initialize(argv)
       @options = {
@@ -16,6 +16,7 @@ module Bow
       }
       @argv = argv.dup
       @ssh_helpers = {}
+      @debug = false
     end
 
     # rubocop:disable Lint/ShadowingOuterLocalVariable
@@ -42,11 +43,15 @@ module Bow
 
     def ssh_helper(host)
       conn = host.conn
-      @ssh_helpers[conn] ||= SshHelper.new(conn, config, inventory)
+      @ssh_helpers[conn] ||= SshHelper.new(conn, self)
     end
 
     def targets(user)
       @targets ||= Targets.new(inventory.targetfile, user)
+    end
+
+    def debug?
+      !!@debug
     end
 
     private
