@@ -18,8 +18,7 @@ module Bow
       end
 
       def load!
-        @instance = nil
-        @instance = new(true)
+        @instance = new
       end
     end
 
@@ -27,7 +26,7 @@ module Bow
     LINE_SEP = "\n".freeze
     NOT_FOUND = :not_found
 
-    def initialize()
+    def initialize
       @file_path = self.class.file_path || Config.guest[:history]
       @modified = false
       @file_opened = false
@@ -92,7 +91,7 @@ module Bow
           last_c = idx
         end
       end
-      { record: NOT_FOUND, first_c: first_c, last_c: last_c}
+      { record: NOT_FOUND, first_c: nil, last_c: nil }
     end
 
     def add(task, applied = false, reverted = false)
