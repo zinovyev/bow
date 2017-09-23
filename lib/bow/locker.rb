@@ -30,6 +30,7 @@ module Bow
       @file_path = self.class.file_path || Config.guest[:history]
       @modified = false
       @file_opened = false
+      @runtime_cache = {}
     end
 
     def applied?(task)
@@ -67,6 +68,7 @@ module Bow
 
     def reset(task)
       meta = find(task)
+      reset_cache(task)
       return if meta[:record] == NOT_FOUND
       file.seek(meta[:first_c], IO::SEEK_SET)
       str_len = meta[:last_c] - meta[:first_c] + 1
@@ -74,15 +76,39 @@ module Bow
     end
 
     def find(task)
+      cached = from_cache(task)
+      return cached if cached
+      result = pure_find(task)
+      to_cache(task, result)
+      result
+    end
+
+    def from_cache(task)
+      @runtime_cache[task]
+    end
+
+    def to_cache(task, result)
+      @runtime_cache[task] = result
+    end
+
+    def reset_cache(task)
+      @runtime_cache[task] = nil
+    end
+
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Style/PerlBackrefs
+    def pure_find(task)
       file.rewind
       current_line = ''
       first_c = 0
       last_c = 0
       file.each_char.with_index do |c, idx|
         if c == LINE_SEP
-          if current_line.match?(/^#{task}#{SEPARATOR}/)
+          current_line =~ /^([^\s]+)#{SEPARATOR}/
+          if task == $1
             return { record: current_line, first_c: first_c, last_c: last_c }
           end
+          to_cache(task, record: $1, first_c: first_c, last_c: last_c)
           current_line = ''
           first_c = idx + 1
           last_c = first_c
@@ -93,11 +119,15 @@ module Bow
       end
       { record: NOT_FOUND, first_c: nil, last_c: nil }
     end
+    # rubocop:enable Style/PerlBackrefs
+    # rubocop:enable Metrics/MethodLength
 
     def add(task, applied = false, reverted = false)
       reset(task)
       file.seek(0, IO::SEEK_END)
       write(task, applied, reverted)
+      reset_cache(task)
+      self
     end
 
     def write(task, applied = false, reverted = false)
@@ -118,6 +148,7 @@ module Bow
     def empty!
       file.rewind
       file.truncate(0)
+      @runtime_cache = {}
     end
 
     def file
