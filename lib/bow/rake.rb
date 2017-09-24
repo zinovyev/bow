@@ -96,25 +96,24 @@ module Rake
     end
 
     def flow
-      @flow ||= {}
-      @flow
+      @flow ||= { enabled: true, run: :always, revert: nil }
     end
 
     def find_revert_task
-      task_name = @flow[:revert] if @flow[:revert]
+      binding.pry
+      task_name = flow[:revert] if flow[:revert]
       application.lookup(task_name)
     end
 
     # Add flow to the task.
-    def unpack_flow(flow)
-      return unless flow
-      flow.each { |rule, val| add_flow_rule(rule, val) }
+    def unpack_flow(init_flow)
+      return unless init_flow
+      init_flow.each { |rule, val| add_flow_rule(rule, val) }
     end
 
     def add_flow_rule(rule, val)
       return unless ALLOWED_FLOW_RULES.include? rule
-      @flow ||= {}
-      @flow[rule.to_sym] = val
+      flow[rule.to_sym] = val
     end
   end
 end
