@@ -58,16 +58,17 @@ module Rake
       return apply_revert_task if disabled?
       return if run_once? && applied?
       result = orig__invoke_with_call_chain(task_args, invocation_chain)
-      apply! if run_once?
+      apply if run_once?
       flush_history
       result
     end
 
     def apply_revert_task
       revert_task = find_revert_task
-      return if !revert_task || revert_task.applied?
+      return if reverted? || !revert_task || revert_task.applied?
       result = revert_task.execute
-      revert_task.apply!
+      revert_task.apply if revert_task.run_once?
+      revert
       flush_history
       result
     end

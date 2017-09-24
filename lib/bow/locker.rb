@@ -3,11 +3,6 @@ require 'objspace'
 
 # Locker is a task state manager.
 # It tracks the task status and saves it to the history file.
-#
-# * If task should run only once and is already applied
-# * If task should run only once, is already applied and than is marked as reverted
-# * If task that ran once should be 
-#
 module Bow
   class Locker
     class << self
@@ -26,6 +21,8 @@ module Bow
     LINE_SEP = "\n".freeze
     NOT_FOUND = :not_found
 
+    attr_accessor :runtime_cache
+
     def initialize
       @file_path = self.class.file_path || Config.guest[:history]
       @modified = false
@@ -35,12 +32,12 @@ module Bow
 
     def applied?(task)
       record = parse(find(task))
-      record && record[1]
+      !!(record && record[1])
     end
 
     def reverted?(task)
       record = parse(find(task))
-      record && record[2]
+      !!(record && record[2])
     end
 
     def apply(task)
@@ -59,8 +56,8 @@ module Bow
       record.map do |v|
         v.strip!
         case v
-        when "true" then true
-        when "false" then false
+        when 'true' then true
+        when 'false' then false
         else v
         end
       end
@@ -79,7 +76,6 @@ module Bow
       cached = from_cache(task)
       return cached if cached
       result = pure_find(task)
-      to_cache(task, result)
       result
     end
 
@@ -105,10 +101,10 @@ module Bow
       file.each_char.with_index do |c, idx|
         if c == LINE_SEP
           current_line =~ /^([^\s]+)#{SEPARATOR}/
+          to_cache(task, record: $1, first_c: first_c, last_c: last_c)
           if task == $1
             return { record: current_line, first_c: first_c, last_c: last_c }
           end
-          to_cache(task, record: $1, first_c: first_c, last_c: last_c)
           current_line = ''
           first_c = idx + 1
           last_c = first_c
@@ -126,13 +122,16 @@ module Bow
       reset(task)
       file.seek(0, IO::SEEK_END)
       write(task, applied, reverted)
-      reset_cache(task)
       self
     end
 
     def write(task, applied = false, reverted = false)
+      reset_cache(task)
       record = [task, applied, reverted].join(SEPARATOR)
+      first_c = file.tell
       file.puts(record)
+      last_c = first_c + record.size - 1
+      to_cache(task, record: record, first_c: first_c, last_c: last_c)
       @modified = true
       self
     end
@@ -142,6 +141,19 @@ module Bow
       file.close
       @file_opened = false
       @modified = false
+      self
+    end
+
+    def compact
+      compressed = ''
+      file.each do |l|
+        compressed << l unless l[0] == ' '
+      end
+      file.rewind
+      file.write(compressed)
+      file.truncate(compressed.size)
+      @runtime_cache = {}
+      @modified = true
       self
     end
 

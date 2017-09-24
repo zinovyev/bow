@@ -3,25 +3,35 @@
 module Bow
   module Memorable
     def task_history
-      @task_history ||= History.load
+      @task_history ||= Locker.load
     end
 
-    def update_history(step = {})
-      task_history.add(name, step) unless step.empty?
-    end
+    # def update_history(step = {})
+      # task_history.add(name, step) unless step.empty?
+    # end
 
     def flush_history
       task_history.flush
     end
 
-    def apply!
-      update_history(applied: Time.now.to_i)
+    def apply
+      task_history.apply(name)
     end
 
     def applied?
-      task_hist = task_history.get(name)
-      return false if !task_hist || task_hist.empty?
-      !!task_hist.last['applied']
+      task_history.applied?(name)
+    end
+
+    def revert(task)
+      task_history.revert(name)
+    end
+
+    def reverted?
+      task_history.reverted?(name)
+    end
+
+    def reset(task)
+      task_history.reset(task)
     end
   end
 end
