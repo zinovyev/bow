@@ -31,12 +31,12 @@ else
   echo ">> Ruby already installed!"
 fi
 
-# Install rake
-which rake &>/dev/null
+# Install bow
+which bow &>/dev/null
 if [[ 0 != $? ]]; then
-  echo ">> Installing Rake..."
-  gem install rake
-  if [[ $? == 0 ]]; then echo "Rake installed!"; fi
+  echo ">> Installing Bow..."
+  gem install bow
+  if [[ $? == 0 ]]; then echo "Bow installed!"; fi
 else
-  echo ">> Rake already installed!"
+  echo ">> Bow already installed!"
 fi

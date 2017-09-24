@@ -12,3 +12,5 @@ AllCops:
   Exclude:
     - tests
   TargetRubyVersion: '2.4'
+Metrics/ClassLength:
+  Enabled: false

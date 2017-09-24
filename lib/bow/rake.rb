@@ -100,9 +100,8 @@ module Rake
     end
 
     def find_revert_task
-      binding.pry
-      task_name = flow[:revert] if flow[:revert]
-      application.lookup(task_name)
+      return unless flow[:revert]
+      application.lookup(flow[:revert])
     end
 
     # Add flow to the task.

@@ -26,7 +26,7 @@ module Bow
       guest: {
         base_dir: '%s',
         rake_dir: '%s/rake',
-        history: '%s/history.json',
+        history: '%s/.history',
         pre_script: '%s/provision.sh'
       },
       host: {

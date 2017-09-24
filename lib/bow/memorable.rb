@@ -7,7 +7,7 @@ module Bow
     end
 
     # def update_history(step = {})
-      # task_history.add(name, step) unless step.empty?
+    # task_history.add(name, step) unless step.empty?
     # end
 
     def flush_history
@@ -22,7 +22,7 @@ module Bow
       task_history.applied?(name)
     end
 
-    def revert(task)
+    def revert
       task_history.revert(name)
     end
 
@@ -30,8 +30,8 @@ module Bow
       task_history.reverted?(name)
     end
 
-    def reset(task)
-      task_history.reset(task)
+    def reset
+      task_history.reset(name)
     end
   end
 end

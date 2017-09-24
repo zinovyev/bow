@@ -28,13 +28,13 @@ RSpec.describe Bow::Locker do
   describe '#find' do
     it 'should find all saved tasks' do
       expect(locker.find('task4')).to eq(
-        record: 'task4  ::  true  ::  false', first_c: 217, last_c: 242
+        record: "task4;\ttrue;\tfalse", first_c: 153, last_c: 170
       )
       expect(locker.find('task5')).to eq(
-        record: 'task5  ::  true  ::  true', first_c: 244, last_c: 268
+        record: "task5;\ttrue;\ttrue", first_c: 172, last_c: 188
       )
       expect(locker.find('task1')).to eq(
-        record: 'task1  ::  true  ::  false', first_c: 0, last_c: 25
+        record: "task1;\ttrue;\tfalse", first_c: 0, last_c: 17
       )
     end
 
@@ -50,7 +50,7 @@ RSpec.describe Bow::Locker do
       locker.reset('task7')
       locker.reset('task5')
       expect(locker.find('task5')).to eq(
-        :record=>:not_found, :first_c=>nil, :last_c=>nil
+        record: :not_found, first_c: nil, last_c: nil
       )
     end
   end

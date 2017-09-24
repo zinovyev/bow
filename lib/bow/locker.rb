@@ -17,7 +17,7 @@ module Bow
       end
     end
 
-    SEPARATOR = '  ::  '.freeze
+    SEPARATOR = ";\t".freeze
     LINE_SEP = "\n".freeze
     NOT_FOUND = :not_found
 
