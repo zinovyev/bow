@@ -25,7 +25,11 @@ It can be handy for you if:
 
 Download and install bow with the following.
 
+```bash
+
   gem install bow
+
+```
 
 
 ## Usage
@@ -105,6 +109,44 @@ namespace :example_group2 do
     sh 'echo "Goodbye! The task at example group #2 is disabled!"'
   end
 end
+
+```
+
+
+###Commands
+
+
+To **check the availability** of all configured hosts run:
+
+
+```bash
+
+  bow ping
+
+```
+
+To **prepare soft on client** needed for bow to run
+(Ruby and 2 gems: rake and bow) execute
+
+```bash
+
+  bow prepare
+
+```
+
+To **apply configured provision** run:
+
+```bash
+
+  bow apply
+
+```
+
+To explore more options and commands run:
+
+```bash
+
+  bow -h
 
 ```
 

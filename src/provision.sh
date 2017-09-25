@@ -34,9 +34,14 @@ fi
 # Install bow
 which bow &>/dev/null
 if [[ 0 != $? ]]; then
-  echo ">> Installing Bow..."
   gem install bow
-  if [[ $? == 0 ]]; then echo "Bow installed!"; fi
 else
-  echo ">> Bow already installed!"
+  gem_ver=`gem list --local | grep "^rails " | awk -F'[()]' '{ print $2 }'`
+  if [[ $gem_ver < $BOW_VERSION ]]; then
+    echo ">> Installing Bow..."
+    gem update bow
+    if [[ $? == 0 ]]; then echo "Bow installed!"; fi
+  else
+    echo ">> Bow already installed!"
+  fi
 fi

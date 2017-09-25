@@ -14,7 +14,7 @@ module Bow
             ResponseFormatter.multi_print(host, results)
 
             cmd = "rake #{host.group}:provision"
-            result = app.ssh_helper(host).execute(cmd)
+            result = app.ssh_helper(host).execute(cmd, true)
             ResponseFormatter.pretty_print(host, result)
           end
         end

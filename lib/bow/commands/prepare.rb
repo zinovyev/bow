@@ -13,7 +13,8 @@ module Bow
             results = app.ssh_helper(host).prepare_provision
             ResponseFormatter.multi_print(host, results)
 
-            provision_cmd = "bash #{@app.config.guest_from_host[:pre_script]}"
+            provision_cmd = "BOW_VERSION=\"#{Bow::VERSION}\" \
+bash #{@app.config.guest_from_host[:pre_script]}"
             result = app.ssh_helper(host).execute(provision_cmd)
             ResponseFormatter.pretty_print(host, result)
           end

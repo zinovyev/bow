@@ -19,15 +19,13 @@ module Bow
       @conn = conn
     end
 
-    def execute(cmd, timeout = 10, skip_chdir = false)
-      cmd = if skip_chdir
-              format("'%s'", cmd)
+    def execute(cmd, timeout = 10, chdir = false)
+      cmd = if chdir
+              format("'cd %s && %s'",
+                     @app.config.guest_from_host[:rake_dir],
+                     cmd)
             else
-              format(
-                "'cd %s && %s'",
-                @app.config.guest_from_host[:rake_dir],
-                cmd
-              )
+              format("'%s'", cmd)
             end
       cmd = "ssh -o ConnectTimeout=#{timeout} #{conn} #{cmd}"
       run(cmd)
@@ -49,7 +47,7 @@ module Bow
     end
 
     def ensure_base_dir
-      execute("mkdir -p #{@app.config.guest_from_host[:rake_dir]}", 10, true)
+      execute("mkdir -p #{@app.config.guest_from_host[:rake_dir]}", 10, false)
     end
 
     def copy_preprovision_script
