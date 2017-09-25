@@ -12,7 +12,7 @@ module Bow
       end
 
       def guest_from_host
-        @guest_from_host ||= Config.new(:guest, '~')
+        @guest_from_host ||= Config.new(:guest, GUEST_FROM_HOST_BASE_DIR)
       end
     end
 

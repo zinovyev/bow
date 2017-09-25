@@ -55,10 +55,13 @@ module Rake
     alias orig__invoke_with_call_chain invoke_with_call_chain
 
     def invoke_with_call_chain(task_args, invocation_chain) # :nodoc:
-      return apply_revert_task if disabled?
+      if disabled?
+        return unless applied?
+        return apply_revert_task
+      end
       return if run_once? && applied?
       result = orig__invoke_with_call_chain(task_args, invocation_chain)
-      apply if run_once?
+      apply
       flush_history
       result
     end
@@ -101,7 +104,7 @@ module Rake
 
     def find_revert_task
       return unless flow[:revert]
-      application.lookup(flow[:revert])
+      application.lookup(flow[:revert], @scope)
     end
 
     # Add flow to the task.

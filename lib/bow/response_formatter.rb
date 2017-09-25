@@ -12,6 +12,12 @@ module Bow
         puts "#{wrap(*args)}\n"
       end
 
+      def multi_print(host, results)
+        results.each do |r|
+          puts "#{wrap(host, r)}\n"
+        end
+      end
+
       def wrap(host, result)
         host_group = colorize("[#{host.group}]", HEADER)
         host_addr = colorize(host.host, HEADER)

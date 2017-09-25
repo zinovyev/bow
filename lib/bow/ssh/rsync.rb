@@ -8,14 +8,14 @@ module Bow
       end
 
       def call(source, target)
-        @ssh_helper.run(cmd_rsync(source, conn, target))
+        @ssh_helper.run(cmd_rsync(source, target))
       end
 
-      def cmd_rsync(source, conn, target)
+      def cmd_rsync(source, target)
         format(
-          'rsync --contimeout=10 --force -r %s %s:%s',
+          'rsync --timeout=10 --force -r %s %s:%s',
           source,
-          conn,
+          @ssh_helper.conn,
           target
         )
       end

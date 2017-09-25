@@ -10,10 +10,10 @@ module Bow
       def run
         ThreadPool.new do |t|
           t.from_enumerable targets do |host|
-            result = app.ssh_helper(host).prepare_provision(PROVISION_PATH)
-            ResponseFormatter.pretty_print(host, result)
+            results = app.ssh_helper(host).prepare_provision
+            ResponseFormatter.multi_print(host, results)
 
-            provision_cmd = "bash #{PROVISION_PATH}/preprovision.sh"
+            provision_cmd = "bash #{@app.config.guest_from_host[:pre_script]}"
             result = app.ssh_helper(host).execute(provision_cmd)
             ResponseFormatter.pretty_print(host, result)
           end

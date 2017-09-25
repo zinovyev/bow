@@ -9,12 +9,17 @@ module Bow
 
       def call(source, target)
         @ssh_helper.execute(cmd_rm(target)) if cleanup_needed?
-        @ssh_helper.run(cmd_scp(source, conn, target))
+        @ssh_helper.run(cmd_scp(source, target))
         @ssh_helper.run(cmd)
       end
 
-      def cmd_scp(source, conn, target)
-        format('scp -o ConnectTimeout -r %s %s:%s', source, conn, target)
+      def cmd_scp(source, target)
+        format(
+          'scp -o ConnectTimeout -r %s %s:%s',
+          source,
+          @ssh_helper.conn,
+          target
+        )
       end
 
       def cmd_rm(target)

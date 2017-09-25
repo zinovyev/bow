@@ -4,57 +4,50 @@
 
 [![Build Status](https://travis-ci.org/zinovyev/bow.svg?branch=master)](https://travis-ci.org/zinovyev/bow)
 
+[![Gem Version](https://badge.fury.io/rb/bow.svg)](https://badge.fury.io/rb/bow)
+
+
 ## About
 
-Bow is a system that allows you to write Rake tasks and execute them remotely
-to provision and configure you servers.
+Bow doesn't bring its own DSL to live, rather it uses regular Rake tasks
+instead.
 
-## Why?
+It can be handy for you if:
 
-Well...
+ * you need to configure a pure system of 2-5 VPSs;
 
-I do know about dozens of [configuration management](https://en.wikipedia.org/wiki/Comparison_of_open-source_configuration_management_software) software. And I've also used to use some of them.
-And I actually like a couple of them too.
+ * you don't want to build a complex infrastructure;
 
-But when it comes to a simple goal like configuring 2 or 3 VPS nodes I don't
-really want to create a complex infrastructure (I don't want to create any
-infrastructure to be honest) for it and I like to do it in Ruby (well, maybe
-in Bash and Ruby).
+ * you are already familiar with Rake and don't want to to learn Python;
 
-And there's already exists a great tool that can execute tasks and is written
-in Ruby. And it's called Rake.
 
-So. Bow is simple, agentless and it doesn't bring it's own DSL to life, cause it
-uses Rake instead.
+## Installation
+
+Download and install bow with the following.
+
+  gem install bow
+
 
 ## Usage
 
-1. If you're not familiar with Rake [Rake docs](https://ruby.github.io/rake/) and [Rake home](https://github.com/ruby/rake) can be a good place to start from;
+First of all. If you're not familiar with Rake and Rake tasks, take a look at
+this pages: [Rake docs](https://ruby.github.io/rake/) and [Rake home](https://github.com/ruby/rake). It can be a good place to start from.
 
-2. Install the `bow` gem with:
 
-```bash
+### Project structure
 
-gem install bow
+The basic bow project consists of two files: `Rakefile` and `targets.json`.
 
-``` 
+Run `bow init` which will generate an example project structure to give you a
+basic understanding of how to write your own configuration.
 
-3. Create an empty folder and init a basic structure there:
+Sometimes it can be convinient to put tasks to separate files into the
+[rakelib](https://ruby.github.io/rake/doc/rakefile_rdoc.html#label-Multiple+Rake+Files)
+folder. So Rake will automatically autoload them.
 
-```bash
 
-mkdir ~/bow-test
+**targets.json** contains a list of hosts grouped in categories:
 
-cd ~/bow-test
-
-bow init
-
-```
-
-4. The command `bow init` called above created a bare structure wich consits
-of a `Rakefile` and a list of targets (managed servers) in `targets.json` file.
-
-The example targets file contains 4 IPs combined in two managed groups:
 
 ```json
 
@@ -71,11 +64,13 @@ The example targets file contains 4 IPs combined in two managed groups:
 
 ```
 
-A `Rakefile` contains two tasks for provisioning packed in namespaces wich are
-called by the name of the server groups from the `targets.json` file. The main
-task of the group MUST always be called **provision** and can be bound to any
-number of additional tasks. Sometimes (always) it is convinient to put
-additional tasks them to separate files into the [rakelib](https://ruby.github.io/rake/doc/rakefile_rdoc.html#label-Multiple+Rake+Files) folder.
+
+**Rakefile** is actually an ordinary Rakefile) which contains several tasks
+for provisioning packed in namespaces which are called by the name of the server
+groups from the `targets.json` file.
+
+The main task of the group MUST always be called **provision** and can be bound
+to any number of additional tasks.
 
 
 ```ruby
@@ -100,7 +95,8 @@ namespace :example_group2 do
   task provision: :print_hello do
   end
 
-  flow enabled: false, revert_task: :print_goodbye
+  # Change enabled value to "false" to run the reverting task (:print_goodbye)
+  flow enabled: true, revert_task: :print_goodbye
   task :print_hello do
     sh 'echo "Hello from example group #2 server!"'
   end
@@ -112,45 +108,26 @@ end
 
 ```
 
-5. Now run `bow apply` and your provisioning tasks will be executed on servers
-listed in `targets.json` file;
 
-6. To find more about available commands (`ping`, `exec` etc.) type `bow -h`;
+### Flow
 
-## Task flow
+Command **flow** from the upper example is a little extension added by the bow
+gem which allows you to controll the flow of the task. It consists of 3 options:
 
-While that is not necessary, it can be convinient to install a `bow` gem on the
-client server too. So you will be able to use a little Rake DSL enhancement
-wich bring a better controll of the flow of your tasks.
+* `run: :once` or `run: :always` sets the condition on how many times to run
+the task;
 
-The only thing you will be needed to do afterwards to enable the feature is to
-require it by putting `require bow/rake` to the top of your `Rakefile`.
+* `enabled: true` or `enabled: false` wich takes a boolean value allows you to
+disable the task so it can be ommited or reverted (if a reverting task
+is given);
 
-Now you'll be able to put this `flow` line before the task definition:
-
-```ruby
-
-flow run: :once, enabled: :true, revert: :revert_simple_task
-task :simple_task do
-  # some code here ...
-end
-
-task :revert_simple_task do
-  # remove evertything that simple task have done >/ 
-end
-
-```
-
-The 3 options are:
-
-* `run` wich can be either `:once` or `:always`. If set to `once` the task will
-be run only once on remote server;
-
-* `enabled` wich takes a boolean value. If set to false, the task will be
-disabled and won't run at all;
-
-* `revert` wich defines a task that can revert changes done by the original
-task when the original task is disabled (by `enabled: false` option). Actually
-it's something similar to the down migration when dealing with databases;
+* `revert: task_name` wich defines a task that can revert changes done
+by the original task when the original task is disabled (by `enabled: false`
+option). Actually it's something similar to the down migration when dealing
+with ActiveRecord;
 
 
+### Run the example
+
+To run the example locally this [Vagrantfile](doc/Vagrantfile) can be used to create a
+testing environment.

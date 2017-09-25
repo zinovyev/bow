@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
-require 'pp'
-
 module Bow
   module Commands
     class Exec < Command

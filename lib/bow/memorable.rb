@@ -6,10 +6,6 @@ module Bow
       @task_history ||= Locker.load
     end
 
-    # def update_history(step = {})
-    # task_history.add(name, step) unless step.empty?
-    # end
-
     def flush_history
       task_history.flush
     end

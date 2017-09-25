@@ -25,6 +25,7 @@ module Bow
         task provision: :print_hello do
         end
 
+        # The task :print_hello from the :example_group1 will run only once
         flow run: :once
         task :print_hello do
           sh 'echo "Hello from example group #1 server!"'
@@ -35,13 +36,16 @@ module Bow
         task provision: :print_hello do
         end
 
-        flow enabled: false, revert_task: :print_goodbye
+        # The task :pring_hello from the example_group2 will run everytime
+        # until it is disabled.
+        # Change enabled value to "false" to run the reverting task (:print_goodbye)
+        flow enabled: true, revert: :print_goodbye
         task :print_hello do
           sh 'echo "Hello from example group #2 server!"'
         end
 
         task :print_goodbye do
-          sh 'echo "Goodbye! The task at example group #2 is disabled!"'
+          sh 'echo "Goodbye! The task at example group #2 is reverted!"'
         end
       end
     RAKEFILE

@@ -5,9 +5,10 @@ require_relative 'lib/bow/version.rb'
 Gem::Specification.new do |s|
   s.name        = 'bow'
   s.version     = Bow::VERSION
-  s.date        = '2017-09-09'
-  s.summary     = 'Simple provisioning via rake tasks'
-  s.description = 'Simple provisioning via rake tasks'
+  s.date        = Time.now.strftime('%Y-%m-%d')
+  s.summary     = "Automate your infrastructure provisioning \\
+and configuration with Rake."
+  s.description = s.summary
   s.authors     = ['Zinovyev Ivan']
   s.email       = 'zinovyev.id@gmail.com'
   s.files = `git ls-files -z`.split("\x0").reject do |f|
@@ -16,9 +17,8 @@ Gem::Specification.new do |s|
   s.executables << 'bow'
   s.homepage    = 'https://github.com/zinovyev/bow'
   s.license     = 'MIT'
-  s.add_runtime_dependency 'rake'
-  s.add_development_dependency 'pry'
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'mocha'
-  s.add_development_dependency 'rubocop'
+  s.add_runtime_dependency 'rake', '~> 12.1'
+  s.add_development_dependency 'pry', '~> 0.10.3'
+  s.add_development_dependency 'rspec', '~> 3.6'
+  s.add_development_dependency 'rubocop', '~> 0.50.0'
 end

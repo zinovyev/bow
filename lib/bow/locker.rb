@@ -30,6 +30,7 @@ module Bow
       @runtime_cache = {}
     end
 
+    # rubocop:disable Style/SafeNavigation
     def applied?(task)
       record = parse(find(task))
       !!(record && record[1])
@@ -39,6 +40,7 @@ module Bow
       record = parse(find(task))
       !!(record && record[2])
     end
+    # rubocop:enable Style/SafeNavigation
 
     def apply(task)
       return if applied?(task)
@@ -101,10 +103,8 @@ module Bow
       file.each_char.with_index do |c, idx|
         if c == LINE_SEP
           current_line =~ /^([^\s]+)#{SEPARATOR}/
-          to_cache(task, record: $1, first_c: first_c, last_c: last_c)
-          if task == $1
-            return { record: current_line, first_c: first_c, last_c: last_c }
-          end
+          to_cache($1, record: current_line, first_c: first_c, last_c: last_c)
+          from_cache(task) if task == $1
           current_line = ''
           first_c = idx + 1
           last_c = first_c

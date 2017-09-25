@@ -10,10 +10,10 @@ module Bow
       def run
         ThreadPool.new do |t|
           t.from_enumerable targets do |host|
-            result = app.ssh_helper(host).prepare_provision(PROVISION_PATH)
-            ResponseFormatter.pretty_print(host, result)
+            results = app.ssh_helper(host).prepare_provision
+            ResponseFormatter.multi_print(host, results)
 
-            cmd = "'cd #{PROVISION_PATH} && rake #{host.group}:provision'"
+            cmd = "rake #{host.group}:provision"
             result = app.ssh_helper(host).execute(cmd)
             ResponseFormatter.pretty_print(host, result)
           end

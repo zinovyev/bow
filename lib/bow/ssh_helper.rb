@@ -19,7 +19,16 @@ module Bow
       @conn = conn
     end
 
-    def execute(cmd, timeout = 10)
+    def execute(cmd, timeout = 10, skip_chdir = false)
+      cmd = if skip_chdir
+              format("'%s'", cmd)
+            else
+              format(
+                "'cd %s && %s'",
+                @app.config.guest_from_host[:rake_dir],
+                cmd
+              )
+            end
       cmd = "ssh -o ConnectTimeout=#{timeout} #{conn} #{cmd}"
       run(cmd)
     end
@@ -35,11 +44,12 @@ module Bow
       results << ensure_base_dir
       results << copy_preprovision_script
       results << copy_rake_tasks
-      merge_results(*results)
+      results
+      # merge_results(*results)
     end
 
     def ensure_base_dir
-      execute("mkdir -p #{@app.config.guest_from_host[:base_dir]}")
+      execute("mkdir -p #{@app.config.guest_from_host[:rake_dir]}", 10, true)
     end
 
     def copy_preprovision_script
@@ -50,7 +60,7 @@ module Bow
     end
 
     def copy_rake_tasks
-      copy(@app.inventory.location, @app.config.guest_from_host[:rake_dir])
+      copy("#{@app.inventory.location}/*", @app.config.guest_from_host[:rake_dir])
     end
 
     def copy_tool

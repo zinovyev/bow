@@ -24,7 +24,7 @@ module Bow
       [
         '-c',
         '--copy-tool',
-        'Utilit used for files transfer (scp or rsync)',
+        'A tool used for provision files transfer (can be scp or rsync)',
         :option_copy_tool
       ],
       [
