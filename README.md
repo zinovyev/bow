@@ -3,7 +3,6 @@
   Automate your infrastructure provisioning and configuration with Rake.
 
 [![Build Status](https://travis-ci.org/zinovyev/bow.svg?branch=master)](https://travis-ci.org/zinovyev/bow)
-
 [![Gem Version](https://badge.fury.io/rb/bow.svg)](https://badge.fury.io/rb/bow)
 
 
@@ -113,7 +112,7 @@ end
 ```
 
 
-###Commands
+### Commands
 
 
 To **check the availability** of all configured hosts run:

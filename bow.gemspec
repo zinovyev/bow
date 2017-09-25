@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = 'bow'
   s.version     = Bow::VERSION
   s.date        = Time.now.strftime('%Y-%m-%d')
-  s.summary     = "Automate your infrastructure provisioning \\
+  s.summary     = "Automate your infrastructure provisioning \
 and configuration with Rake."
   s.description = s.summary
   s.authors     = ['Zinovyev Ivan']

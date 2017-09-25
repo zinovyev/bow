@@ -58,7 +58,8 @@ module Bow
     end
 
     def copy_rake_tasks
-      copy("#{@app.inventory.location}/*", @app.config.guest_from_host[:rake_dir])
+      copy("#{@app.inventory.location}/*",
+           @app.config.guest_from_host[:rake_dir])
     end
 
     def copy_tool

@@ -18,7 +18,7 @@ RSpec.describe Bow::SshHelper do
   describe '#execute' do
     it 'should provide a valid comand string' do
       cmd = 'echo "Hello World"'
-      out = 'ssh -o ConnectTimeout=10 root@127.0.0.1 echo "Hello World"'
+      out = "ssh -o ConnectTimeout=10 root@127.0.0.1 'echo \"Hello World\"'"
       expect(ssh_helper.execute(cmd)).to eq out
     end
   end
